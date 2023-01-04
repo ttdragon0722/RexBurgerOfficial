@@ -1,47 +1,62 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+<template>
+  <div>
+    <!-- menu -->
+    <button class="fixed z-10" v-on:click="menuClick()">haha</button>
+    <transition v-on:before-enter="beforeEnter" v-on:enter="enter" @leave="leave" >
+      <Menu v-show="menuSwitch" :close="menuClick"></Menu>
+    </transition>
+  </div>
+</template>
+<script>
+import Menu from '@/components/Menu.vue'
+
+export default {
+  components: {
+    Menu
+  },
+  methods: {
+    // switch
+    menuClick: function () {
+      this.menuSwitch = !this.menuSwitch
+      }
+    ,
+    // menu enter animation
+    beforeEnter(el) {
+      const enter = this.gsap.timeline()
+      if (el) {
+        enter.set(el.querySelector('#menu'), {
+          opacity:1
+        }).set(el.querySelectorAll('.menu-bg'), {
+          x: '100%'
+        }).set(el.querySelector("#content"), {
+          opacity: 0
+        })
+      }
+    },
+    enter(el) {
+      const menu_bg = this.gsap.timeline()
+      menu_bg.to(el.querySelectorAll('.menu-bg'), {
+        x: 0, duration: 1, stagger: 0.05
+      }).to(el.querySelector('#content'), {
+        opacity: 1, duration: 0.5,onComplete:function () {
+        }
+      }, ">")
+    },
+    leave(el,done) {
+      this.gsap.to(el.querySelector('#menu'),0.3, 
+      {opacity:0,onComplete:done})
+      } 
+  },
+    data() {
+      return {
+        menuSwitch: false
+      }
+    }
+  }
 </script>
 
-<template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
-</template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+<style>
+.fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
