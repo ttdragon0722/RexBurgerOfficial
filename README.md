@@ -28,4 +28,9 @@ npm run dev
 npm run build
 ```
 
-### 圖層
+## 圖層
+
+* background 0
+* content 1-50
+* menu 50
+* menu button 60 
